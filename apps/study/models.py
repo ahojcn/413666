@@ -23,4 +23,5 @@ class StudyRecord(models.Model):
     user = models.ForeignKey('User', verbose_name='记录所属用户', on_delete=None)
     start_time = models.DateTimeField(verbose_name='开始学习时间')
     end_time = models.DateTimeField(verbose_name='结束学习时间')
+    all_time = models.FloatField(default=0.0, verbose_name='学习总时间')
     is_delete = models.BooleanField(default=False, verbose_name='是否删除')
