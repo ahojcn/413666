@@ -3,8 +3,13 @@ from .models import User, StudyRecord
 from django.urls import reverse
 import re
 from django.conf import settings
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.generic import View
+
+from rest_framework.views import APIView
+from .serializers import UserSerializer
+from rest_framework.response import Response
+from rest_framework import status
 
 
 # Create your views here.
@@ -81,3 +86,39 @@ class RegisterView(View):
         self.resp_json['user_info'] = {'username': username, 'email': email}
         ret = JsonResponse(self.resp_json)
         return ret
+
+
+# /test
+class Test(View):
+    """django rest framework test"""
+
+    def get(self, request):
+        users = User.objects.all()
+
+        import json
+        from django.core import serializers
+
+        json_data = serializers.serialize("json", users)
+        json_data = json.loads(json_data)
+
+        return JsonResponse(json_data, safe=False)
+
+
+# /drf
+class Drf(APIView):
+    """
+    django rest framework test named drf
+    """
+
+    def get(self, request, format=None):
+        users = User.objects.all()
+        user_serializer = UserSerializer(users, many=True)
+        return Response(user_serializer.data)
+
+    def post(self, request, format=None):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

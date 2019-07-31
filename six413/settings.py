@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.study',  # 注册 study 应用
     'corsheaders',  # 跨域问题
+    'rest_framework',  # rest framework
 ]
 
 MIDDLEWARE = [
