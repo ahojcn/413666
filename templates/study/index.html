@@ -1,11 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>413 study index page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <style>
+        #msg {
+            display: none;
+            color: red;
+        }
+    </style>
 </head>
+<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script>
+    $(function () {
+        $('#btn').click(function () {
+            // var csrftoken = document.cookie.match(/csrftoken=\w+/g)[0].split('=')[1];
+            var u = $('#a1').val();
+            var p1 = $('#a2').val();
+            var p2 = $('#a3').val();
+            var e = $('#a4').val();
+
+            // $.post('http://127.0.0.1:8000/413/register/', {
+            //     'username': u, "password": p1, "cpassword": p2, "email": e
+            // }, function (data) {
+            //     console.log(data);
+            //     $('#msg').show().html(data.msg);
+            // })
+            var temp_data = {
+                "username": u,
+                "password": p1,
+                "cpassword": p2,
+                "email": e
+            }
+
+            $.ajax({
+                url: 'http://127.0.0.1:8000/413/register/',
+                type: 'post',
+                headers: {'X-CSRFToken': $.cookie('csrftoken')},
+                data: JSON.stringify(temp_data),
+                success: function(data) {
+                    console.log(data);
+                }
+            })
+        })
+    })
+</script>
+
 <body>
-<h1>413 study index page!</h1>
-{{ test }}
+    <form method="post" action="register/">
+        {% csrf_token %}
+        <input type="text" name="username"><br>
+        <input type="text" name="password"><br>
+        <input type="text" name="cpassword"><br>
+        <input type="text" name="email"><br>
+        <input type="submit" value="提交">
+    </form>
 </body>
+
 </html>
