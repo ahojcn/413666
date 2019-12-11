@@ -1,18 +1,20 @@
 from django.shortcuts import render, redirect
 from .models import User, StudyRecord
 from django.urls import reverse
-import re
 from django.conf import settings
 from django.http import JsonResponse, HttpResponse
 from django.views.generic import View
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_exempt
 
+import re
+import json
 
 # Create your views here.
 def index(request):
     """测试首页"""
     return render(request, 'study/index.html', {'test': 'test'})
+
 
 @csrf_exempt
 def get_csrftoken(request):
@@ -21,9 +23,11 @@ def get_csrftoken(request):
     return JsonResponse({'csrftoken': csrftoken})
 
 
-# /register
+# /413/register/
 class RegisterView(View):
-    """注册"""
+    """
+    用户注册接口
+    """
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -91,3 +95,28 @@ class RegisterView(View):
         self.resp_json['user_info'] = {'username': username, 'email': email}
         ret = JsonResponse(self.resp_json)
         return ret
+
+
+# /413/login/
+class LoginView(View):
+    """
+    用户登录接口
+    """
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.resp_json = {'status': 0, 'msg': 'success'}
+
+    def post(self, request):
+        fields = {'username', 'password'}
+        raw_data = json.loads(request.body)
+        user_info = dict()
+
+        if fields.issubset(set(raw_data.keys())):
+            for key in fields:
+                user_info[key] = raw_data[key]
+
+        user_obj = User.objects.filter(raw_data['username'])
+        print(user_obj)
+
+        return JsonResponse(self.resp_json)

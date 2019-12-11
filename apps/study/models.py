@@ -29,6 +29,7 @@ class StudyRecord(models.Model):
     is_delete = models.BooleanField(default=False, verbose_name='是否删除')
 
     class Meta:
+        db_table = 'ss_study_record'
         verbose_name = '学习记录'
         verbose_name_plural = verbose_name  # plural 复数
 
